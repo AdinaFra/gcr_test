@@ -17,11 +17,7 @@ ENV KUBE_LATEST_VERSION="v1.16.2"
 # https://github.com/kubernetes/helm/releases
 ENV HELM_VERSION="v2.15.2"
 
-RUN apk --no-cache add curl && \
-    apk add --update \
-        python \
-        build-base \
-    && rm -rf /var/cache/apk/* &&\
+RUN apk --no-cache add curl && apk add --update python build-base && rm -rf /var/cache/apk/*
 
 WORKDIR /config
 
