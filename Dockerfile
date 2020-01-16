@@ -22,14 +22,6 @@ RUN apk --no-cache add curl && \
         python \
         build-base \
     && rm -rf /var/cache/apk/* &&\
-    curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-245.0.0-linux-x86_64.tar.gz && \
-    tar zxvf google-cloud-sdk-245.0.0-linux-x86_64.tar.gz google-cloud-sdk && \
-    ./google-cloud-sdk/install.sh && \
-    apk add --no-cache ca-certificates bash git openssh curl \
-    && wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl \
-    && chmod +x /usr/local/bin/kubectl \
-    && wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
-    && chmod +x /usr/local/bin/helm \
 
 WORKDIR /config
 
