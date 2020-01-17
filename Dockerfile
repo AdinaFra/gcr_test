@@ -15,9 +15,28 @@ LABEL org.label-schema.vcs-ref=$VCS_REF \
 ENV KUBE_LATEST_VERSION="v1.16.2"
 # Note: Latest version of helm may be found at:
 # https://github.com/kubernetes/helm/releases
-ENV HELM_VERSION="v2.15.2"
+ENV HELM_VERSION="v2.14.3"
 
-RUN apk --no-cache add curl && apk add --update python build-base && rm -rf /var/cache/apk/*
+# Note: Latest version of kubectl may be found at:
+# https://cloud.google.com/sdk/docs/release-notes
+ENV GCLOUD_SDK="273.0.0"
+
+RUN apk --no-cache add curl && \
+    apk add --update \
+        python \
+        build-base \
+    && rm -rf /var/cache/apk/* &&\
+    curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${GCLOUD_SDK}-linux-x86_64.tar.gz && \
+    tar zxvf google-cloud-sdk-${GCLOUD_SDK}-linux-x86_64.tar.gz google-cloud-sdk && \
+    ./google-cloud-sdk/install.sh && \
+    apk add --no-cache ca-certificates bash git openssh curl \
+    && wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl \
+    && chmod +x /usr/local/bin/kubectl \
+    && wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
+    && chmod +x /usr/local/bin/helm \
+    && apk upgrade --update-cache --available && apk add openssl && rm -rf /var/cache/apk/*
+
+ENV PATH="/google-cloud-sdk/bin:${PATH}"
 
 WORKDIR /config
 
